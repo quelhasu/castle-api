@@ -25,6 +25,7 @@ app.use(bodyParser.json());
 
 // Definition des CORS
 app.use(function(req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
@@ -59,4 +60,4 @@ app.get("/hotel/:destination", function(req, res){
 
 // Definition et mise en place du port d'écoute
 var port = 4000;
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`));
