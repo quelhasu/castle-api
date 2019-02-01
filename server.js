@@ -64,8 +64,7 @@ app.get("/hotel/:destination/:id", function(req, res){
   var ref = db.ref(`/hotels/${destination}`);
 
   ref.orderByChild('id').equalTo(id).on("value", function(snapshot){
-    console.log(snapshot.val());
-    res.json(snapshot.val());
+    res.json(snapshot.val()[Object.keys(snapshot.val())[0]]);
   });
 })
 
