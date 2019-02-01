@@ -12,7 +12,6 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
-
 // Definition de l'objet express
 const app = express();
 
@@ -26,10 +25,10 @@ app.use(bodyParser.json());
 // Definition des CORS
 app.use(function(req, res, next) {
   res.setHeader('Content-Type', 'application/json');
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-  res.setHeader("Access-Control-Allow-Credentials", true);
+  // res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+  // res.setHeader("Access-Control-Allow-Origin", "*");
+  // res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  // res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 
@@ -53,10 +52,22 @@ app.get("/hotel/:destination", function(req, res){
       map.push(element);
     });
     res.json(map);
+    return null;
   }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
   });
 });
+
+app.get("/hotel/:destination/:id", function(req, res){
+  var id = req.params.id;
+  var destination = req.params.destination;
+  var ref = db.ref(`/hotels/${destination}`);
+
+  ref.orderByChild('id').equalTo(id).on("value", function(snapshot){
+    console.log(snapshot.val());
+    res.json(snapshot.val());
+  });
+})
 
 // Definition et mise en place du port d'écoute
 var port = 4000;
