@@ -24,11 +24,11 @@ app.use(bodyParser.json());
 
 // Definition des CORS
 app.use(function(req, res, next) {
-  res.setHeader('Content-Type', 'application/json');
-  // res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
-  // res.setHeader("Access-Control-Allow-Origin", "*");
-  // res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-  // res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 
@@ -42,32 +42,41 @@ app.get("/hello", function(req, res) {
   res.json("Hello World");
 });
 
-app.get("/hotel/:destination", function(req, res){
+app.get("/hotel/:destination", function(req, res) {
   var destination = req.params.destination;
-  var ref = db.ref("/hotels/"+destination);
+  var ref = db.ref("/hotels/" + destination);
 
-  ref.on("value", function (snapshot) {
-    var map =[];
-    snapshot.forEach(element => {
-      map.push(element);
-    });
-    res.json(map);
-    return null;
-  }, function (errorObject) {
-    console.log("The read failed: " + errorObject.code);
-  });
+  ref.on(
+    "value",
+    function(snapshot) {
+      var map = [];
+      snapshot.forEach(element => {
+        map.push(element);
+      });
+      res.json(map);
+      return null;
+    },
+    function(errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    }
+  );
 });
 
-app.get("/hotel/:destination/:id", function(req, res){
+app.get("/hotel/:destination/:id", function(req, res) {
   var id = req.params.id;
   var destination = req.params.destination;
-  var ref = db.ref(`/hotels/${destination}`);
-
-  ref.orderByChild('id').equalTo(id).on("value", function(snapshot){
-    res.json(snapshot.val()[Object.keys(snapshot.val())[0]]);
-  });
-})
+  if (destination && id) {
+    var ref = db.ref(`/hotels/${destination}`);
+    ref
+      .orderByChild("id")
+      .equalTo(id)
+      .once("value", function(snapshot) {
+        if (snapshot.exists()) res.json(snapshot.val()[Object.keys(snapshot.val())[0]]);
+        else res.status(404).send('Bad Request');
+      });
+  }
+});
 
 // Definition et mise en place du port d'écoute
 var port = 4000;
-app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`));
+app.listen(process.env.PORT || port, () => console.log(`Listening on port ${port}`));
