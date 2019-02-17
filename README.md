@@ -5,7 +5,7 @@
 
 This tool allow accessing firebase database hotels in order to use it in the client interface.
 
-[Express](https://expressjs.com/fr/) for API management.
+[Express](https://expressjs.com/fr/) for API management.  
 [Firebase](https://firebase.google.com/) for database management.
 
 This project is a micro-service of _Castle_ project including [castle-client](https://github.com/quelhasu/castle-client) and [castle-cron-job](https://github.com/quelhasu/castle-cron-job).
