@@ -37,10 +37,6 @@ app.use(function(req, res, next) {
 // app.use("/hotel", router);
 // require(__dirname + "/controllers/hotelController")(router);
 
-// Definition route Hello
-app.get("/hello", function(req, res) {
-  res.json("Hello World");
-});
 
 app.get("/hotel/:destination", function(req, res) {
   var destination = req.params.destination;
